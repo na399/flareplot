@@ -1,0 +1,136 @@
+function parseGPCRdb2flare(data) {
+  // var data_GPCRdb = JSON.parse(data);
+
+  var dataFlare = {
+    edges: [],
+    tracks: [
+      {
+        trackLabel: "Secondary Structure",
+        trackProperties: []
+      }
+    ],
+    trees: [
+      {
+        treeLabel: "Secondary Structure",
+        treePaths: []
+      }
+    ],
+    default: {
+      edgeColor: "rgba(100,100,100,100)",
+      edgeWidth: 1
+    }
+  };
+
+  var segmentColors = {
+    "1": "#1500D6",
+    "2": "#003D97",
+    "3": "#00E600",
+    "4": "#00E600",
+    "5": "#FEE200",
+    "6": "#FF9000",
+    "7": "#FF3B00",
+    "8": "#FF0000",
+    "0": "#FFFFFF"
+  };
+
+  function assignColor(segment) {
+    var color = "";
+    switch (segment) {
+      case "TM1":
+        color = segmentColors["1"];
+        break;
+      case "TM2":
+        color = segmentColors["2"];
+        break;
+      case "TM3":
+        color = segmentColors["3"];
+        break;
+      case "TM4":
+        color = segmentColors["4"];
+        break;
+      case "TM5":
+        color = segmentColors["5"];
+        break;
+      case "TM6":
+        color = segmentColors["6"];
+        break;
+      case "TM7":
+        color = segmentColors["7"];
+        break;
+      case "H8":
+        color = segmentColors["8"];
+        break;
+      default:
+        color = segmentColors["0"];
+    }
+    return color;
+  }
+
+  function separatePair(stringPair) {
+    var regex = /([0-9x]+),([0-9x]+)/g;
+    var m;
+
+    matches = regex.exec(stringPair);
+
+    return [matches[1], matches[2]];
+  }
+
+    // fill in tracks and trees
+    for (var residue in data.segment_map) {
+    if (data.segment_map.hasOwnProperty(residue)) {
+        dataFlare.tracks[0].trackProperties.push({
+        nodeName: residue,
+        color: assignColor(data.segment_map[residue]),
+        size: 1
+        });
+
+        dataFlare.trees[0].treePaths.push(
+        data.segment_map[residue] + "." + residue
+        );
+    }
+    }
+
+  // fill in edges
+  if (data.generic == false) {
+    // data.generic == false in case of single crystal
+    
+    for (var pair in data.interactions) {
+      if (data.interactions.hasOwnProperty(pair)) {
+        pairResidues = separatePair(pair);
+
+        dataFlare.edges.push({
+          name1: pairResidues[0],
+          name2: pairResidues[1],
+          frames: [0]
+        });
+      }
+    }
+  } else {
+    crystals = Object.keys(data.aa_map);
+
+    for (var pair in data.interactions) {
+        if (data.interactions.hasOwnProperty(pair)) {
+          pairResidues = separatePair(pair);
+  
+          var frames = [];
+
+          for (var crystal in data.interactions[pair]){
+              if(data.interactions[pair].hasOwnProperty(crystal)){
+                  var frame = crystals.indexOf(crystal);
+                  frames.push(frame);
+              }
+          }
+
+          dataFlare.edges.push({
+            name1: pairResidues[0],
+            name2: pairResidues[1],
+            frames: frames
+          });
+        }
+      }
+
+
+  }
+
+  return dataFlare;
+}

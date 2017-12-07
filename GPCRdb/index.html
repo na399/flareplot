@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Diversity in the GPCR interactome across human tissues">
+    
+        <!-- Javascript libs -->
+        <script type="text/javascript" src="../docs/vendor/d3/d3.v3.min.js"></script>
+        <script type="text/javascript" src="../docs/js/flareplot-main.js"></script>
+        <script type="text/javascript" src="../docs/js/flareplot-selectors.js"></script>
+        <script type="text/javascript" src="../docs/js/flareplot-rangeslider.js"></script>
+    
+        <!-- Visualization CSS -->
+        <link href="../docs/css/flareplot-main.css" rel="stylesheet">
+        <link href="../docs/css/flareplot-selectors.css" rel="stylesheet">
+        <link href="../docs/css/flareplot-rangeslider.css" rel="stylesheet">
+    
+        <link href="../docs/css/demos.css" rel="stylesheet">
+    
+        <style>
+            #flareDiv div{
+                position: relative;
+                left: 50%;
+                margin-left: -300px;
+            }
+            #sliderDiv {
+                height: 30px;
+                width: 600px;
+                position: relative;
+                left: 50%;
+                margin-left: -300px;
+                margin-top: 20px;
+            }
+            #regroupDiv {
+                position: relative;
+                left: 50%;
+                margin-left: -50px;
+                margin-top: 20px;
+                width: 100px;
+                height: 30px;
+                background-color: #d7deeb;
+                vertical-align: middle;
+                text-align: center;
+                line-height: 30px;
+                border: 2px solid #8489a3;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+            #regroupDiv:hover {
+                background-color: #a1a5bd;
+            }
+    
+    
+        </style>
+    </head>
+    <body>
+        <br>
+        <div class="container" id="flareDiv"></div>
+        <div class="container" id="sliderDiv"></div>
+
+        <script>
+            var flareplot;
+            var slider;
+        
+            function fileRead(contents){
+                flareplot = createFlareplot(600, contents, "#flareDiv");
+                slider = createFlareplotSlider(flareplot, "#sliderDiv");
+        
+                var curGroup = 0;
+                d3.select("#regroupDiv")
+                    .on("click", function(){
+                        curGroup = (curGroup+1)%2;
+                        flareplot.setTrack(curGroup);
+                        flareplot.setTree(curGroup);
+                    });
+            }
+        
+            // d3.text("../docs/resources/mor-active-rep1-wb_small.json", function(json_text){
+            // d3.text("resources/4IAQflare.json", function(json_text){
+            d3.text("resources/5-HTflare.json", function(json_text){
+                fileRead(json_text);
+            });
+
+        
+        </script>
+
+    </body>
+</html>
