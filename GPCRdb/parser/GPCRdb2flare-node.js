@@ -1,7 +1,9 @@
 var fs = require("fs");
 
 function parseGPCRdb2flare(data) {
-  // var data_GPCRdb = JSON.parse(data);
+  if (typeof data == "string") {
+    data = JSON.parse(data);
+  }
 
   var dataFlare = {
     edges: [],
@@ -77,62 +79,51 @@ function parseGPCRdb2flare(data) {
     return [matches[1], matches[2]];
   }
 
-    // fill in tracks and trees
-    for (var residue in data.segment_map) {
-    if (data.segment_map.hasOwnProperty(residue)) {
-        dataFlare.tracks[0].trackProperties.push({
-        nodeName: residue,
-        color: assignColor(data.segment_map[residue]),
-        size: 1
-        });
+  // Fill tracks and trees
+  Object.keys(data.segment_map).forEach(function(residue) {
+    dataFlare.tracks[0].trackProperties.push({
+      nodeName: residue,
+      color: assignColor(data.segment_map[residue]),
+      size: 1
+    });
 
-        dataFlare.trees[0].treePaths.push(
-        data.segment_map[residue] + "." + residue
-        );
-    }
-    }
+    dataFlare.trees[0].treePaths.push(
+      data.segment_map[residue] + "." + residue
+    );
+  });
 
-  // fill in edges
-
+  // Fill edges
   if (data.generic == false) {
     // data.generic == false in case of single crystal
-    
-    for (var pair in data.interactions) {
-      if (data.interactions.hasOwnProperty(pair)) {
-        pairResidues = separatePair(pair);
 
-        dataFlare.edges.push({
-          name1: pairResidues[0],
-          name2: pairResidues[1],
-          frames: [0]
-        });
-      }
-    }
+    Object.keys(data.interactions).forEach(function(pair) {
+      pairResidues = separatePair(pair);
+
+      dataFlare.edges.push({
+        name1: pairResidues[0],
+        name2: pairResidues[1],
+        frames: [0]
+      });
+    });
   } else {
     crystals = Object.keys(data.aa_map);
 
-    for (var pair in data.interactions) {
-        if (data.interactions.hasOwnProperty(pair)) {
-          pairResidues = separatePair(pair);
-  
-          var frames = [];
+    Object.keys(data.interactions).forEach(function(pair) {
+      pairResidues = separatePair(pair);
 
-          for (var crystal in data.interactions[pair]){
-              if(data.interactions[pair].hasOwnProperty(crystal)){
-                  var frame = crystals.indexOf(crystal);
-                  frames.push(frame);
-              }
-          }
+      var frames = [];
 
-          dataFlare.edges.push({
-            name1: pairResidues[0],
-            name2: pairResidues[1],
-            frames: frames
-          });
-        }
-      }
+      Object.keys(data.interactions[pair]).forEach(function(crystal) {
+        var frame = crystals.indexOf(crystal);
+        frames.push(frame);
+      });
 
-
+      dataFlare.edges.push({
+        name1: pairResidues[0],
+        name2: pairResidues[1],
+        frames: frames
+      });
+    });
   }
 
   return dataFlare;
@@ -140,7 +131,6 @@ function parseGPCRdb2flare(data) {
 
 var dataTest = require("../resources/4IAQ.json");
 var dataTest2 = require("../resources/5-HT.json");
-
 
 fs.writeFile(
   "../resources/4IAQflare.json",
@@ -153,12 +143,11 @@ fs.writeFile(
 );
 
 fs.writeFile(
-    "../resources/5-HTflare.json",
-    JSON.stringify(parseGPCRdb2flare(dataTest2)),
-    "utf8",
-    function(err) {
-      if (err) throw err;
-      console.log("saved2");
-    }
-  );
-  
+  "../resources/5-HTflare.json",
+  JSON.stringify(parseGPCRdb2flare(dataTest2)),
+  "utf8",
+  function(err) {
+    if (err) throw err;
+    console.log("saved2");
+  }
+);
