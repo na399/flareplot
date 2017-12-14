@@ -41,12 +41,12 @@ function createFlareplot(width, inputGraph, containerSelector){
                 .size([360, ry - discRad])
                 .sort(function(a, b) {
 
-                    var structures = ["N-term", "TM1", "ICL1", "TM2", "ECL1", "TM3", "ICL2", "TM4", "ECL2", "TM5", "ICL3", "TM6", "ECL3", "TM7", "H8", "C-term"];                    
+                    var segments = ["N-term", "TM1", "ICL1", "TM2", "ECL1", "TM3", "ICL2", "TM4", "ECL2", "TM5", "ICL3", "TM6", "ECL3", "TM7", "H8", "C-term"];                    
                     var startWithNonDigit = /^\D/;
 
                     if (startWithNonDigit.test(a.key) || startWithNonDigit.test(b.key)){
-                        var aRes = structures.indexOf(a.key);
-                        var bRes = structures.indexOf(b.key);
+                        var aRes = segments.indexOf(a.key);
+                        var bRes = segments.indexOf(b.key);
                     } else {
                         var aRes = a.key.match(/[0-9]*$/);
                         var bRes = b.key.match(/[0-9]*$/);

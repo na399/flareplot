@@ -8,7 +8,7 @@
     
         <!-- Javascript libs -->
         <script type="text/javascript" src="../docs/vendor/d3/d3.v3.min.js"></script>
-        <script type="text/javascript" src="../docs/js/flareplot-main.js"></script>
+        <script type="text/javascript" src="../flareplot-main.js"></script>
         <script type="text/javascript" src="../docs/js/flareplot-selectors.js"></script>
         <script type="text/javascript" src="../docs/js/flareplot-rangeslider.js"></script>
     
@@ -17,15 +17,31 @@
         <link href="../docs/css/flareplot-selectors.css" rel="stylesheet">
         <link href="../docs/css/flareplot-rangeslider.css" rel="stylesheet">
     
-        <link href="../docs/css/demos.css" rel="stylesheet">
+        <!-- <link href="../docs/css/demos.css" rel="stylesheet"> -->
     
         <style>
+            * {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            }
             #flareDiv div{
                 position: relative;
                 left: 50%;
                 margin-left: -300px;
             }
             #sliderDiv {
+                height: 30px;
+                width: 600px;
+                position: relative;
+                left: 50%;
+                margin-left: -300px;
+                margin-top: 20px;
+            }
+            #flareDiv2 div{
+                position: relative;
+                left: 50%;
+                margin-left: -300px;
+            }
+            #sliderDiv2 {
                 height: 30px;
                 width: 600px;
                 position: relative;
@@ -56,9 +72,14 @@
         </style>
     </head>
     <body>
-        <br>
+        <h3 style="text-align:center; padding:20px">Single Cystal: 4IAQ</h3>
         <div class="container" id="flareDiv"></div>
         <div class="container" id="sliderDiv"></div>
+
+        <h3 style="text-align:center; padding:20px">Single Group of Cystals: 5-HT</h3>
+        <div class="container" id="flareDiv2"></div>
+        <div class="container" id="sliderDiv2"></div>
+        <p style="text-align:center; padding:20px">Each frame represents a single crystal.</p>
 
         <script>
             var flareplot;
@@ -68,19 +89,26 @@
                 flareplot = createFlareplot(600, contents, "#flareDiv");
                 slider = createFlareplotSlider(flareplot, "#sliderDiv");
         
-                var curGroup = 0;
-                d3.select("#regroupDiv")
-                    .on("click", function(){
-                        curGroup = (curGroup+1)%2;
-                        flareplot.setTrack(curGroup);
-                        flareplot.setTree(curGroup);
-                    });
+                // var curGroup = 0;
+                // d3.select("#regroupDiv")
+                //     .on("click", function(){
+                //         curGroup = (curGroup+1)%2;
+                //         flareplot.setTrack(curGroup);
+                //         flareplot.setTree(curGroup);
+                //     });
             }
         
-            // d3.text("../docs/resources/mor-active-rep1-wb_small.json", function(json_text){
-            // d3.text("resources/4IAQflare.json", function(json_text){
-            d3.text("resources/5-HTflare.json", function(json_text){
+            d3.text("resources/4IAQflare.json", function(json_text){
                 fileRead(json_text);
+            });
+
+            function fileRead2(contents){
+                flareplot = createFlareplot(600, contents, "#flareDiv2");
+                slider = createFlareplotSlider(flareplot, "#sliderDiv2");
+            }
+        
+            d3.text("resources/5-HTflare.json", function(json_text){
+                fileRead2(json_text);
             });
 
         
