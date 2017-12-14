@@ -54,12 +54,12 @@ function createFlareplot(width, inputGraph, containerSelector){
                             aRes = a.key;
                             bRes = b.key;
                         } else {
-                            if (aRes[0].length == 3){
+                            if (a.key.length == 5){
                                 aRes = parseInt(aRes[0].substring(0,2)) + 0.5;
                             } else {
                                 aRes = parseInt(aRes[0]);
                             }
-                            if (bRes[0].length == 3){
+                            if (b.key.length == 5){
                                 bRes = parseInt(bRes[0].substring(0,2)) + 0.5;
                             } else {
                                 bRes = parseInt(bRes[0]);
