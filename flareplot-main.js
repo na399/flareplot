@@ -54,8 +54,16 @@ function createFlareplot(width, inputGraph, containerSelector){
                             aRes = a.key;
                             bRes = b.key;
                         } else {
-                            aRes = parseInt(aRes[0]);
-                            bRes = parseInt(bRes[0]);
+                            if (aRes[0].length == 3){
+                                aRes = parseInt(aRes[0].substring(0,2)) + 0.5;
+                            } else {
+                                aRes = parseInt(aRes[0]);
+                            }
+                            if (bRes[0].length == 3){
+                                bRes = parseInt(bRes[0].substring(0,2)) + 0.5;
+                            } else {
+                                bRes = parseInt(bRes[0]);
+                            }
                         }
                     }    
                     return d3.ascending(aRes, bRes);
