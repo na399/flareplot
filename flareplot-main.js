@@ -40,32 +40,15 @@ function createFlareplot(width, inputGraph, containerSelector){
             cluster = d3.layout.cluster()
                 .size([360, ry - discRad])
                 .sort(function(a, b) {
-
-                    var segments = ["N-term", "TM1", "ICL1", "TM2", "ECL1", "TM3", "ICL2", "TM4", "ECL2", "TM5", "ICL3", "TM6", "ECL3", "TM7", "H8", "C-term"];                    
-                    var startWithNonDigit = /^\D/;
-
-                    if (startWithNonDigit.test(a.key) || startWithNonDigit.test(b.key)){
-                        var aRes = segments.indexOf(a.key);
-                        var bRes = segments.indexOf(b.key);
-                    } else {
-                        var aRes = a.key.match(/[0-9]*$/);
-                        var bRes = b.key.match(/[0-9]*$/);
-                        if (aRes.length==0 || bRes.length==0) {
-                            aRes = a.key;
-                            bRes = b.key;
-                        } else {
-                            if (a.key.length == 5){
-                                aRes = parseInt(aRes[0].substring(0,2)) + 0.5;
-                            } else {
-                                aRes = parseInt(aRes[0]);
-                            }
-                            if (b.key.length == 5){
-                                bRes = parseInt(bRes[0].substring(0,2)) + 0.5;
-                            } else {
-                                bRes = parseInt(bRes[0]);
-                            }
-                        }
-                    }    
+                    var aRes = a.key.match(/[0-9]*$/);
+                    var bRes = b.key.match(/[0-9]*$/);
+                    if(aRes.length==0 || bRes.length==0){
+                        aRes = a.key;
+                        bRes = b.key;
+                    }else{
+                        aRes = parseInt(aRes[0]);
+                        bRes = parseInt(bRes[0]);
+                    }
                     return d3.ascending(aRes, bRes);
                 });
 
@@ -89,12 +72,14 @@ function createFlareplot(width, inputGraph, containerSelector){
 
             d3.select(containerSelector).style("position","relative");
 
+            div = d3.select(containerSelector).insert("div")
+                .style("width", w + "px")
+                .style("height", h + "px")
+                .style("-webkit-backface-visibility", "hidden");
 
-            svg = d3.select(containerSelector).append("svg:svg")
-                .attr("class", "flareplotSVG")
+            svg = div.append("svg:svg")
                 .attr("width", w)
                 .attr("height", h)
-                .attr("padding", "20px 20px")
                 .append("svg:g")
                 .attr("transform", "translate(" + rx + "," + ry + ")");
 
@@ -117,7 +102,7 @@ function createFlareplot(width, inputGraph, containerSelector){
                 })
                 .enter().append("svg:path")
                 .attr("class", function(d) {
-                    var ret = "link source-" + d.source.key + " target-" + d.target.key + " " + d.class; 
+                    var ret = "link source-" + d.source.key + " target-" + d.target.key;
                     if( d.source.key in toggledNodes || d.target.key in toggledNodes) {
                         ret += " toggled";
                     }
@@ -128,7 +113,6 @@ function createFlareplot(width, inputGraph, containerSelector){
                 })
                 .style("stroke",function(d){ return d.color; })
                 .style("fill","none")
-                .attr("data-interaction-type", function(d){ return d["data-interaction-type"]; })
                 .attr("d", function(d, i) { return line(splines[i]); })
                 .on("mouseover", function(d){ fireEdgeHoverListeners(d); })
                 .on("click", function(d){ fireEdgeToggleListeners(d); });
@@ -299,9 +283,7 @@ function createFlareplot(width, inputGraph, containerSelector){
                         key: "" + t.tree[e.name1].key + "-" + t.tree[e.name2].key,
                         color: e.color || graph.defaults.edgeColor || "rgba(100,100,100)",
                         opacity: e.opacity || graph.defaults.edgeOpacity || 1,
-                        width: e.width || graph.defaults.edgeWidth || 1,
-                        class: e.class,
-                        'data-interaction-type': e['data-interaction-type']
+                        width: e.width || graph.defaults.edgeWidth || 1
                     };
 
                     var edgeKey = edge.key;
@@ -312,9 +294,7 @@ function createFlareplot(width, inputGraph, containerSelector){
                             key: edge.key,
                             color: edge.color,
                             opacity: edge.opacity,
-                            width: edge.width,
-                            class: edge.class,
-                            'data-interaction-type': e['data-interaction-type']
+                            width: edge.width
                         };
                         t.allEdges.push({
                             source: edge.source,
@@ -322,9 +302,7 @@ function createFlareplot(width, inputGraph, containerSelector){
                             key: edge.key,
                             color: edge.color,
                             opacity: edge.opacity,
-                            width: edge.width,
-                            class: edge.class,
-                            'data-interaction-type': e['data-interaction-type']
+                            width: edge.width
                         });
                     } else {
                         summaryEdges[edgeKey].width += edge.width;
@@ -472,7 +450,7 @@ function createFlareplot(width, inputGraph, containerSelector){
                     return count==(rangeEnd-rangeStart)?(2 * graph.edges[i].width):0;
                 })
                 .attr("class", function(d) {
-                    var ret = "link source-" + d.source.key + " target-" + d.target.key + " " + d.class;
+                    var ret = "link source-" + d.source.key + " target-" + d.target.key;
                     if( d.source.key in toggledNodes || d.target.key in toggledNodes) {
                         ret += " toggled";
                     }
@@ -514,7 +492,7 @@ function createFlareplot(width, inputGraph, containerSelector){
                     }
                 })
                 .attr("class", function(d) {
-                    var ret = "link source-" + d.source.key + " target-" + d.target.key + " " + d.class;
+                    var ret = "link source-" + d.source.key + " target-" + d.target.key;
                     if( d.source.key in toggledNodes || d.target.key in toggledNodes) {
                         ret += " toggled";
                     }
@@ -560,7 +538,7 @@ function createFlareplot(width, inputGraph, containerSelector){
                     return 2 * e.width;
                 })
                 .attr("class", function(d) {
-                    var ret = "link source-" + d.source.key + " target-" + d.target.key + " " + d.class;
+                    var ret = "link source-" + d.source.key + " target-" + d.target.key;
                     if( d.source.key in toggledNodes || d.target.key in toggledNodes)
                         ret+=" toggled";
                     return ret;
@@ -599,7 +577,7 @@ function createFlareplot(width, inputGraph, containerSelector){
                     return count==0?0:(widthScale(count) * e.width);
                 })
                 .attr("class", function(d) {
-                    var ret = "link source-" + d.source.key + " target-" + d.target.key + " " + d.class;
+                    var ret = "link source-" + d.source.key + " target-" + d.target.key;
                     if( d.source.key in toggledNodes || d.target.key in toggledNodes) {
                         ret += " toggled";
                     }

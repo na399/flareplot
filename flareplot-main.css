@@ -26,8 +26,8 @@ path.arc {
 }
 
 .link {
-    /* stroke: #000;
-    stroke-opacity: .15; */
+    stroke: #000;
+    stroke-opacity: .15;
     /*pointer-events: none;*/
 }
 
