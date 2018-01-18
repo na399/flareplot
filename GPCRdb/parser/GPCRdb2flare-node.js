@@ -383,11 +383,11 @@ function getSegmentColor(segmentName) {
   return { r: r, g: g, b: b };
 }
 
-var dataTest = require('../resources/4IAQ.json');
+var dataTest = require('../resources/4AMJ.json');
 // var dataTest2 = require('../resources/5-HT.json');
 
 fs.writeFile(
-  '../resources/4IAQflare.json',
+  '../resources/4AMJflare.json',
   JSON.stringify(parseGPCRdb2flare(dataTest)),
   'utf8',
   function(err) {

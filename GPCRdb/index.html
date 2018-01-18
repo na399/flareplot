@@ -108,13 +108,13 @@
 
 
     <script>
-        d3.text("resources/4IAQflare.json", function (json_text) {
+        d3.text("resources/4AMJflare.json", function (json_text) {
             createFlareplot(600, json_text, ".flareplot-container");
         });
 
 
         setTimeout(function () {
-            d3.text("resources/4IAQ.json", function (json_text) {
+            d3.text("resources/4AMJ.json", function (json_text) {
                 createLegend(json_text, ".flareplot-container");
             });
         }, 1000);
