@@ -306,26 +306,28 @@ function createFlareplot(width, inputGraph, containerSelector){
 
                     var edgeKey = edge.key;
                     if (!summaryEdges[edgeKey]) {
-                        summaryEdges[edgeKey] = {
-                            source: edge.source,
-                            target: edge.target,
-                            key: edge.key,
-                            color: edge.color,
-                            opacity: edge.opacity,
-                            width: edge.width,
-                            class: edge.class,
-                            'data-interaction-type': e['data-interaction-type']
-                        };
-                        t.allEdges.push({
-                            source: edge.source,
-                            target: edge.target,
-                            key: edge.key,
-                            color: edge.color,
-                            opacity: edge.opacity,
-                            width: edge.width,
-                            class: edge.class,
-                            'data-interaction-type': e['data-interaction-type']
-                        });
+                        summaryEdges[edgeKey] = edge;
+                        t.allEdges.push(edge);
+                        // summaryEdges[edgeKey] = {
+                        //     source: edge.source,
+                        //     target: edge.target,
+                        //     key: edge.key,
+                        //     color: edge.color,
+                        //     opacity: edge.opacity,
+                        //     width: edge.width,
+                        //     class: edge.class,
+                        //     'data-interaction-type': e['data-interaction-type']
+                        // };
+                        // t.allEdges.push({
+                        //     source: edge.source,
+                        //     target: edge.target,
+                        //     key: edge.key,
+                        //     color: edge.color,
+                        //     opacity: edge.opacity,
+                        //     width: edge.width,
+                        //     class: edge.class,
+                        //     'data-interaction-type': e['data-interaction-type']
+                        // });
                     } else {
                         summaryEdges[edgeKey].width += edge.width;
                     }
